@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { clearSessionCookie, getCurrentUser } from "@/lib/auth/session";
 import { logAuditEvent } from "@/lib/security/audit";
 
+export const dynamic = "force-dynamic";
+
 export async function POST() {
   const user = await getCurrentUser();
   if (user) {

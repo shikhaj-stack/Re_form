@@ -4,6 +4,8 @@ import { requireAuth } from "@/lib/auth/rbac";
 import { auditService } from "@/lib/services/auditService";
 import { handleApiError, AppError } from "@/lib/security/errors";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(
   req: NextRequest,
   { params }: { params: { id: string } }

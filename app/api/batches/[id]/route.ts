@@ -4,6 +4,8 @@ import { requireAuth } from "@/lib/auth/rbac";
 import { batchService } from "@/lib/services/batchService";
 import { handleApiError, AppError } from "@/lib/security/errors";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }

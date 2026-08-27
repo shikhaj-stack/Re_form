@@ -6,6 +6,8 @@ import { marketplaceService } from "@/lib/services/marketplaceService";
 import { auditService } from "@/lib/services/auditService";
 import { handleApiError, AppError } from "@/lib/security/errors";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const processors = await marketplaceService.listProcessors();

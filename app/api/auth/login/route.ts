@@ -7,6 +7,8 @@ import { checkRateLimit } from "@/lib/security/rate-limit";
 import { logAuditEvent } from "@/lib/security/audit";
 import { handleApiError, AppError } from "@/lib/security/errors";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";

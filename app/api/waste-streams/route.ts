@@ -6,6 +6,8 @@ import { auditService } from "@/lib/services/auditService";
 import { WasteIntakeSchema } from "@/lib/validation/waste.schema";
 import { handleApiError, AppError } from "@/lib/security/errors";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const user = await requireAuth();

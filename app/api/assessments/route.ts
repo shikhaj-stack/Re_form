@@ -8,6 +8,8 @@ import { auditService } from "@/lib/services/auditService";
 import { calculatePaverConversion } from "@/lib/calculations/paver-conversion";
 import { handleApiError } from "@/lib/security/errors";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const user = await getCurrentUser();

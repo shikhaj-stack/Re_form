@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { pathwayService } from "@/lib/services/pathwayService";
 import { handleApiError } from "@/lib/security/errors";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const pathways = await pathwayService.listActive();

@@ -4,6 +4,8 @@ import { impactEngine } from "@/lib/services/impactEngine";
 import { impactService } from "@/lib/services/impactService";
 import { handleApiError } from "@/lib/security/errors";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();

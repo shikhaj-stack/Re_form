@@ -6,6 +6,8 @@ import { auditService } from "@/lib/services/auditService";
 import { CreateBatchSchema, UpdateBatchStatusSchema } from "@/lib/validation/batch.schema";
 import { handleApiError, AppError } from "@/lib/security/errors";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);

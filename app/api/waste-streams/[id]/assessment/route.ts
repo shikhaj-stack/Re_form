@@ -8,6 +8,8 @@ import { pathwayService } from "@/lib/services/pathwayService";
 import { auditService } from "@/lib/services/auditService";
 import { handleApiError } from "@/lib/security/errors";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(
   req: NextRequest,
   { params }: { params: { id: string } }
