@@ -1,0 +1,294 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// -------------------------------------------------------------
+// Core Enums
+// -------------------------------------------------------------
+
+// Role: "FACTORY" | "PROCESSOR" | "ADMIN"
+// WasteType: "FOUNDRY_SAND" | "PET_PLASTIC" | "MIXED_PLASTIC" | "TEXTILE_WASTE" | "GLASS_WASTE" | "FLY_ASH" | "METAL_SCRAP"
+// Unit: "KG" | "TON"
+// Frequency: "DAILY" | "WEEKLY" | "MONTHLY" | "QUARTERLY" | "ONE_TIME"
+// Contamination: "LOW" | "MEDIUM" | "HIGH" | "UNKNOWN"
+// ValidationStatus: "PROTOTYPE" | "REQUIRES_VALIDATION" | "VALIDATED"
+// BatchStatus: "GENERATED" | "COLLECTED" | "SORTED" | "CLEANED" | "PROCESSED" | "CONVERTED" | "TESTED" | "SOLD"
+// ListingStatus: "AVAILABLE" | "RESERVED" | "CLOSED"
+// RequestStatus: "PENDING" | "ACCEPTED" | "DECLINED" | "CANCELLED"
+
+// -------------------------------------------------------------
+// Database Models
+// -------------------------------------------------------------
+
+model Organization {
+  id                 String               @id @default(cuid())
+  name               String
+  industryType       String               // e.g. "Metal Casting", "Polymer Recycling", "Textile Manufacturing"
+  location           String
+  verificationStatus String               @default("UNVERIFIED") // "UNVERIFIED" | "VERIFIED" | "SUSPENDED"
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  users              User[]
+  wasteStreams       WasteStream[]
+  batchesAsSource    MaterialBatch[]      @relation("SourceOrganization")
+  batchesAsProcessor MaterialBatch[]      @relation("ProcessingUnit")
+  marketplaceListings MarketplaceListing[]
+  marketplaceRequests MarketplaceRequest[] @relation("RequesterOrg")
+  economicCalculations EconomicCalculation[]
+  impactRecords      ImpactRecord[]
+  processorProfile   ProcessorProfile?
+  auditLogs          AuditLog[]
+
+  @@index([verificationStatus])
+  @@index([createdAt])
+}
+
+model User {
+  id             String       @id @default(cuid())
+  name           String
+  email          String       @unique
+  passwordHash   String
+  role           String       @default("FACTORY") // "FACTORY" | "PROCESSOR" | "ADMIN"
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  auditLogs      AuditLog[]
+
+  @@index([organizationId])
+  @@index([role])
+}
+
+model WasteStream {
+  id                    String             @id @default(cuid())
+  organizationId        String
+  organization          Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  wasteType             String             // "FOUNDRY_SAND" | "PET_PLASTIC" | "MIXED_PLASTIC" | "TEXTILE_WASTE" | "GLASS_WASTE" | "FLY_ASH" | "METAL_SCRAP"
+  quantity              Float
+  unit                  String             @default("KG") // "KG" | "TON"
+  generationFrequency   String             @default("MONTHLY") // "DAILY" | "WEEKLY" | "MONTHLY" | "QUARTERLY" | "ONE_TIME"
+  contaminationLevel    String             @default("LOW") // "LOW" | "MEDIUM" | "HIGH" | "UNKNOWN"
+  currentDisposalMethod String             // e.g. "Landfill / External Disposal", "Incineration"
+  location              String
+  status                String             @default("ACTIVE") // "ACTIVE" | "ARCHIVED"
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+
+  assessments           WasteAssessment[]
+  batches               MaterialBatch[]
+  marketplaceListings   MarketplaceListing[]
+  economicCalculations  EconomicCalculation[]
+
+  @@index([organizationId])
+  @@index([wasteType])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model WasteAssessment {
+  id                     String             @id @default(cuid())
+  wasteStreamId          String
+  wasteStream            WasteStream        @relation(fields: [wasteStreamId], references: [id], onDelete: Cascade)
+  recoverabilityEstimate Float              // e.g. 0.82 (82%)
+  recommendedPathwayId   String?
+  recommendedPathway     ConversionPathway? @relation(fields: [recommendedPathwayId], references: [id], onDelete: SetNull)
+  potentialProduct       String             // "Recycled Construction Pavers"
+  confidenceLevel        String             @default("PROTOTYPE_CONFIDENCE") // "LOW" | "MEDIUM" | "HIGH" | "PROTOTYPE_CONFIDENCE"
+  disclaimer             String             @default("Prototype Estimate — Requires Material Testing")
+  createdAt              DateTime           @default(now())
+
+  @@index([wasteStreamId])
+  @@index([recommendedPathwayId])
+}
+
+model ConversionPathway {
+  id                               String            @id @default(cuid())
+  name                             String            // e.g. "Foundry Sand + Suitable Plastic -> Recycled Construction Pavers"
+  inputMaterial                    String            // "FOUNDRY_SAND"
+  secondaryMaterial                String?           // "PET_PLASTIC" | "MIXED_PLASTIC"
+  outputProduct                    String            // "Recycled Construction Pavers"
+  processingStages                 String            // JSON serialized or description of 8 stages
+  potentialMarket                  String            // "Civil Infrastructure & Highways"
+  estimatedValueMin                Float             // in INR
+  estimatedValueMax                Float             // in INR
+  environmentalBenefitDescription String            // e.g. "Avoids 0.42 kg CO2 per kg concrete displaced"
+  validationStatus                 String            @default("PROTOTYPE") // "PROTOTYPE" | "REQUIRES_VALIDATION" | "VALIDATED"
+  isActive                         Boolean           @default(true)
+  createdAt                        DateTime          @default(now())
+  updatedAt                        DateTime          @updatedAt
+
+  assessments                      WasteAssessment[]
+  batches                          MaterialBatch[]
+
+  @@index([inputMaterial])
+  @@index([validationStatus])
+  @@index([isActive])
+}
+
+model MaterialBatch {
+  id                   String             @id @default(cuid())
+  batchCode            String             @unique // e.g. "RF-2026-001"
+  wasteStreamId        String
+  wasteStream          WasteStream        @relation(fields: [wasteStreamId], references: [id], onDelete: Cascade)
+  sourceOrganizationId String
+  sourceOrganization   Organization       @relation("SourceOrganization", fields: [sourceOrganizationId], references: [id])
+  quantity             Float
+  unit                 String             @default("KG") // "KG" | "TON"
+  collectionDate       DateTime?
+  processingUnitId     String?
+  processingUnit       Organization?      @relation("ProcessingUnit", fields: [processingUnitId], references: [id], onDelete: SetNull)
+  conversionPathwayId  String?
+  conversionPathway    ConversionPathway? @relation(fields: [conversionPathwayId], references: [id], onDelete: SetNull)
+  productBatchCode     String?            // e.g. "PAVER-BATCH-001"
+  testingStatus        String?            @default("PENDING_TESTING") // "PENDING_TESTING" | "PASSED_IS_15658" | "FAILED"
+  destination          String?            // e.g. "National Highway Authority Sector 4"
+  currentStatus        String             @default("GENERATED") // "GENERATED" | "COLLECTED" | "SORTED" | "CLEANED" | "PROCESSED" | "CONVERTED" | "TESTED" | "SOLD"
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  events               BatchEvent[]
+  economicCalculations EconomicCalculation[]
+  impactRecords        ImpactRecord[]
+
+  @@index([batchCode])
+  @@index([sourceOrganizationId])
+  @@index([processingUnitId])
+  @@index([currentStatus])
+  @@index([createdAt])
+}
+
+model BatchEvent {
+  id          String        @id @default(cuid())
+  batchId     String
+  batch       MaterialBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  eventType   String        // "GENERATED" | "COLLECTED" | "SORTED" | "CLEANED" | "PROCESSED" | "CONVERTED" | "TESTED" | "SOLD"
+  title       String
+  description String?
+  actorId     String?
+  metadata    String?       // JSON serialized metadata e.g. SHA-256 hash or temperature readings
+  createdAt   DateTime      @default(now())
+
+  @@index([batchId])
+  @@index([eventType])
+  @@index([createdAt])
+}
+
+model ProcessorProfile {
+  id                     String       @id @default(cuid())
+  organizationId         String       @unique
+  organization           Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  acceptedMaterials      String       // JSON serialized array e.g. ["FOUNDRY_SAND", "PET_PLASTIC"]
+  processingCapabilities String       // e.g. "Thermal Compounding, Non-Aqueous Scrubbing"
+  capacity               Float        // in KG/month
+  location               String
+  verificationStatus     String       @default("UNVERIFIED") // "UNVERIFIED" | "VERIFIED"
+  description            String?
+
+  @@index([verificationStatus])
+}
+
+model MarketplaceListing {
+  id             String               @id @default(cuid())
+  organizationId String
+  organization   Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  wasteStreamId  String
+  wasteStream    WasteStream          @relation(fields: [wasteStreamId], references: [id], onDelete: Cascade)
+  title          String
+  quantity       Float
+  unit           String               @default("KG")
+  location       String
+  status         String               @default("AVAILABLE") // "AVAILABLE" | "RESERVED" | "CLOSED"
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  requests       MarketplaceRequest[]
+
+  @@index([organizationId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model MarketplaceRequest {
+  id                      String             @id @default(cuid())
+  listingId               String
+  listing                 MarketplaceListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  requesterOrganizationId String
+  requesterOrganization   Organization       @relation("RequesterOrg", fields: [requesterOrganizationId], references: [id], onDelete: Cascade)
+  message                 String?
+  status                  String             @default("PENDING") // "PENDING" | "ACCEPTED" | "DECLINED" | "CANCELLED"
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+
+  @@index([listingId])
+  @@index([requesterOrganizationId])
+  @@index([status])
+}
+
+model EconomicCalculation {
+  id                      String         @id @default(cuid())
+  organizationId          String
+  organization            Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  wasteStreamId           String?
+  wasteStream             WasteStream?   @relation(fields: [wasteStreamId], references: [id], onDelete: SetNull)
+  batchId                 String?
+  batch                   MaterialBatch? @relation(fields: [batchId], references: [id], onDelete: SetNull)
+  wasteQuantity           Float
+  disposalCost            Float
+  processingCost          Float
+  expectedProductOutput   Float
+  sellingPrice            Float
+  estimatedRevenue        Float
+  estimatedNetValue       Float
+  estimatedValueRecovered Float
+  assumptions             String?        // JSON string of calculation parameters
+  disclaimer              String         @default("Illustrative Prototype Calculation — Not a commercial valuation quote")
+  createdAt               DateTime       @default(now())
+
+  @@index([organizationId])
+  @@index([createdAt])
+}
+
+model ImpactRecord {
+  id                    String         @id @default(cuid())
+  organizationId        String
+  organization          Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  batchId               String?
+  batch                 MaterialBatch? @relation(fields: [batchId], references: [id], onDelete: SetNull)
+  wasteDiverted         Float          // in KG
+  materialRecovered     Float          // in KG
+  estimatedCo2Reduction Float          // in KG CO2e
+  productsProduced      Float          // units count
+  methodology           String         @default("Comparative Life Cycle Analysis vs Landfill Linear Baseline")
+  confidenceLevel       String         @default("PROTOTYPE_ESTIMATE")
+  disclaimer            String         @default("Environmental data is a prototype estimate. Requires validated lifecycle analysis (LCA).")
+  createdAt             DateTime       @default(now())
+
+  @@index([organizationId])
+  @@index([createdAt])
+}
+
+model AuditLog {
+  id             String        @id @default(cuid())
+  actorId        String?
+  actor          User?         @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  action         String        // "LOGIN" | "CREATE_BATCH" | "UPDATE_STATUS" | "ASSESSMENT_SUBMITTED" | "MARKETPLACE_REQUEST" | "ADMIN_VERIFY"
+  resourceType   String        // "Batch" | "WasteStream" | "User" | "Organization" | "Session" | "MarketplaceListing"
+  resourceId     String
+  metadata       String?       // JSON sanitized string
+  ipAddress      String?
+  createdAt      DateTime      @default(now())
+
+  @@index([organizationId])
+  @@index([actorId])
+  @@index([action])
+  @@index([createdAt])
+}

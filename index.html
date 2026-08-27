@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RE-FORM // Industrial Waste to Wealth</title>
+    
+    <!-- Strict Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:;">
+    
+    <!-- Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (CDN Runtime Framework) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            400: '#34d399',
+                            500: '#10B981',
+                            600: '#059669',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Structural & Core Design Styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        
+        .dark body {
+            background-color: #020617;
+            color: #f8fafc;
+        }
+
+        /* Ambient Environment Graphics */
+        .ambient-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: -1;
+            background: radial-gradient(circle at 50% -20%, rgba(16, 185, 129, 0.15), transparent 60%);
+        }
+
+        .bg-grid-pattern {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-size: 40px 40px;
+            pointer-events: none; z-index: -2; opacity: 0.3;
+            background-image: linear-gradient(to right, #e2e8f0 1px, transparent 1px), linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+        }
+
+        .dark .bg-grid-pattern {
+            background-image: linear-gradient(to right, #1e293b 1px, transparent 1px), linear-gradient(to bottom, #1e293b 1px, transparent 1px);
+            opacity: 0.4;
+        }
+
+        /* Glassmorphism Structural Classes */
+        .glass-nav {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.85);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .dark .glass-nav {
+            background: rgba(2, 6, 23, 0.85);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        }
+
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(30, 41, 59, 0.8);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Motion Design */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .animate-pulse-ring { animation: pulse-ring 2s infinite; }
+
+        /* Premium Scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col relative overflow-x-hidden selection:bg-emerald-500/30 selection:text-emerald-500">
+    
+    <!-- Environment Topology -->
+    <div class="bg-grid-pattern"></div>
+    <div class="ambient-bg"></div>
+
+    <!-- Application Header Layer -->
+    <header class="glass-nav fixed top-0 w-full z-50 transition-all duration-300 h-20">
+        <div class="max-w-[1500px] mx-auto px-6 h-full flex items-center justify-between">
+            
+            <!-- Branding Entity -->
+            <div id="brand-identity" class="flex items-center gap-4 cursor-pointer group">
+                <div class="w-10 h-10 bg-emerald-500 rounded flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:bg-emerald-400 transition-colors">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-xl tracking-tight dark:text-white text-slate-900 leading-none mb-1">RE-FORM</span>
+                    <span class="text-[9px] uppercase font-mono text-emerald-600 dark:text-emerald-500 tracking-widest font-bold opacity-80">Industrial Waste to Wealth</span>
+                </div>
+            </div>
+            
+            <!-- Multi-Page Application Router -->
+            <nav class="hidden lg:flex items-center gap-1.5 overflow-x-auto">
+                <a href="#" data-view="Landing" class="nav-link px-3.5 py-2 rounded-md text-sm font-semibold transition-all">Landing</a>
+                <a href="#" data-view="Dashboard" class="nav-link px-3.5 py-2 rounded-md text-sm font-semibold transition-all">Dashboard</a>
+                <a href="#" data-view="Conversion Engine" class="nav-link px-3.5 py-2 rounded-md text-sm font-semibold transition-all">Conversion Engine</a>
+                <a href="#" data-view="Tracker" class="nav-link px-3.5 py-2 rounded-md text-sm font-semibold transition-all">Tracker</a>
+                <a href="#" data-view="Marketplace" class="nav-link px-3.5 py-2 rounded-md text-sm font-semibold transition-all">Marketplace</a>
+                <a href="#" data-view="Calculator" class="nav-link px-3.5 py-2 rounded-md text-sm font-semibold transition-all">Calculator</a>
+                <a href="#" data-view="Metrics" class="nav-link px-3.5 py-2 rounded-md text-sm font-semibold transition-all">Metrics</a>
+                <a href="#" data-view="Admin" class="nav-link px-3.5 py-2 rounded-md text-sm font-semibold transition-all">Admin</a>
+                <a href="#" data-view="Architecture" class="nav-link px-3.5 py-2 rounded-md text-sm font-semibold transition-all">Architecture</a>
+            </nav>
+
+            <!-- Edge System Operations -->
+            <div class="flex items-center gap-5">
+                <div class="hidden md:flex items-center gap-2.5 bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-full px-4 py-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-ring"></span>
+                    <span class="text-[10px] font-mono text-slate-600 dark:text-slate-400 uppercase font-bold tracking-wider">SECURE MOCK NODE // ACTIVE</span>
+                </div>
+                <button id="theme-trigger" aria-label="Toggle Operating Theme" class="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-emerald-600 dark:text-slate-400 dark:hover:text-emerald-400 transition-colors border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <svg class="w-4 h-4 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    <svg class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Reactive Dynamic Viewport -->
+    <main id="app-viewport" class="flex-grow flex flex-col w-full relative pt-20">
+        <!-- Rendered by Architecture Engine -->
+    </main>
+
+    <!-- Global Compliance Footer -->
+    <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 backdrop-blur-md relative z-10">
+        <div class="max-w-[1500px] mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+                <span class="text-xs font-mono text-slate-500 dark:text-slate-400">&copy; 2026 RE-FORM B2B Platform</span>
+                <span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700"></span>
+                <span class="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-500/10 px-2 py-1 rounded font-bold uppercase tracking-wider">v1.0.0-PROTOTYPE</span>
+            </div>
+            <div class="text-xs font-mono text-slate-500 dark:text-slate-500 text-center md:text-right max-w-2xl opacity-80">
+                Notice: This interface is operating in a regulatory sandbox environment. Data displayed is for illustrative assessment purposes only.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Architectural Logic Controller -->
+    <script>
+        (function() {
+            'use strict';
+
+            /**
+             * Core Security Protocol: DOM Output Sanitizer
+             * Prevents XSS injections across dynamically mapped mock states.
+             */
+            const escapeHTML = (payload) => {
+                if (payload === null || payload === undefined) return '';
+                return String(payload)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            };
+
+            /**
+             * Singleton State Container: ReFormAppState
+             */
+            const ReFormAppState = {
+                currentView: 'Landing',
+                theme: 'dark',
+                views: [
+                    'Landing', 'Dashboard', 'Conversion Engine', 'Tracker', 
+                    'Marketplace', 'Calculator', 'Metrics', 'Admin', 'Architecture'
+                ],
+                
+                init: function() {
+                    // System Theme Sync
+                    if (localStorage.theme === 'light') {
+                        this.theme = 'light';
+                        document.documentElement.classList.remove('dark');
+                    } else {
+                        document.documentElement.classList.add('dark');
+                        localStorage.theme = 'dark';
+                    }
+
+                    // Strict Event Listeners Registration
+                    this.bindGlobalEvents();
+                    
+                    // Trigger Initial Reactivity Cycle
+                    this.render();
+                },
+
+                bindGlobalEvents: function() {
+                    // Application Brand Routing
+                    const identityNode = document.getElementById('brand-identity');
+                    if(identityNode) {
+                        identityNode.addEventListener('click', () => this.navigate('Landing'));
+                    }
+
+                    // Navigation Network Routing
+                    document.querySelectorAll('.nav-link').forEach(node => {
+                        node.addEventListener('click', (event) => {
+                            event.preventDefault();
+                            this.navigate(event.currentTarget.getAttribute('data-view'));
+                        });
+                    });
+
+                    // Aesthetic Engine Toggle
+                    const themeNode = document.getElementById('theme-trigger');
+                    if(themeNode) {
+                        themeNode.addEventListener('click', () => this.toggleTheme());
+                    }
+                },
+
+                navigate: function(targetView) {
+                    if (!this.views.includes(targetView)) return;
+                    this.currentView = targetView;
+                    this.render();
+                },
+
+                toggleTheme: function() {
+                    this.theme = this.theme === 'dark' ? 'light' : 'dark';
+                    if (this.theme === 'dark') {
+                        document.documentElement.classList.add('dark');
+                        localStorage.theme = 'dark';
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.theme = 'light';
+                    }
+                },
+
+                syncNavUI: function() {
+                    document.querySelectorAll('.nav-link').forEach(node => {
+                        const view = node.getAttribute('data-view');
+                        if (view === this.currentView) {
+                            node.classList.add('text-emerald-600', 'dark:text-emerald-400', 'bg-emerald-50', 'dark:bg-emerald-500/10');
+                            node.classList.remove('text-slate-600', 'dark:text-slate-300', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
+                        } else {
+                            node.classList.remove('text-emerald-600', 'dark:text-emerald-400', 'bg-emerald-50', 'dark:bg-emerald-500/10');
+                            node.classList.add('text-slate-600', 'dark:text-slate-300', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
+                        }
+                    });
+                },
+
+                render: function() {
+                    const viewport = document.getElementById('app-viewport');
+                    
+                    // DOM Purge before Mount (Avoid memory leaks & old refs)
+                    viewport.innerHTML = '';
+                    
+                    this.syncNavUI();
+
+                    if (this.currentView === 'Landing') {
+                        viewport.appendChild(this.buildLandingView());
+                        this.igniteKPIAnimations();
+                    } else if (this.currentView === 'Dashboard') {
+                        viewport.appendChild(this.buildDashboardView());
+                    } else if (this.currentView === 'Conversion Engine') {
+                        viewport.appendChild(this.buildConversionEngineView());
+                    } else if (this.currentView === 'Tracker') {
+                        viewport.appendChild(this.buildTrackerView());
+                    } else if (this.currentView === 'Marketplace') {
+                        viewport.appendChild(this.buildMarketplaceView());
+                    } else if (this.currentView === 'Calculator') {
+                        viewport.appendChild(this.buildCalculatorView());
+                    } else if (this.currentView === 'Metrics') {
+                        viewport.appendChild(this.buildMetricsView());
+                    } else if (this.currentView === 'Admin') {
+                        viewport.appendChild(this.buildAdminView());
+                    } else if (this.currentView === 'Architecture') {
+                        viewport.appendChild(this.buildProcessPipelineView());
+                    } else {
+                        viewport.appendChild(this.buildSandboxPlaceholder(this.currentView));
+                    }
+                },
+
+                igniteKPIAnimations: function() {
+                    const nodes = document.querySelectorAll('.data-kpi');
+                    nodes.forEach(node => {
+                        const maxVal = parseFloat(node.getAttribute('data-metric-val'));
+                        const fmtType = node.getAttribute('data-metric-fmt');
+                        const duration = 2000;
+                        const fps = 30;
+                        const steps = duration / fps;
+                        const velocity = maxVal / steps;
+                        let currentVal = 0;
+                        
+                        const seq = setInterval(() => {
+                            currentVal += velocity;
+                            if (currentVal >= maxVal) {
+                                currentVal = maxVal;
+                                clearInterval(seq);
+                            }
+                            
+                            if (fmtType === 'float') {
+                                node.textContent = currentVal.toFixed(1);
+                            } else {
+                                node.textContent = Math.floor(currentVal).toLocaleString();
+                            }
+                        }, fps);
+                    });
+                },
+
+                /** Components Engine **/
+                buildLandingView: function() {
+                    const container = document.createElement('div');
+                    container.className = 'w-full max-w-[1300px] mx-auto px-6 pt-24 pb-20 flex-grow flex flex-col relative z-10';
+                    
+                    // Layer 1: Strategic Hero Display
+                    const layerHero = `
+                        <div class="text-center max-w-4xl mx-auto mb-24 relative">
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-[11px] font-mono mb-8 font-bold tracking-widest shadow-sm">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                CORE NETWORK ENGINE
+                            </div>
+                            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 text-slate-900 dark:text-white leading-[1.1] animate-float">
+                                RE-FORM: Turn Industrial Waste Into <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-400 dark:from-emerald-400 dark:to-teal-300">Industrial Value.</span>
+                            </h1>
+                            <p class="text-xl text-slate-600 dark:text-slate-400 mb-12 leading-relaxed font-normal max-w-3xl mx-auto">
+                                ${escapeHTML("A waste-to-wealth platform that helps industries discover, recover, track and monetize the hidden value in their waste streams.")}
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-5 justify-center items-center">
+                                <button id="action-start" class="w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white font-semibold rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:shadow-[0_0_35px_rgba(16,185,129,0.4)] flex items-center justify-center gap-3 group border border-emerald-500/50">
+                                    <span>Start Waste Assessment</span>
+                                    <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                </button>
+                                <button id="action-explore" class="w-full sm:w-auto px-8 py-4 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-semibold rounded-xl transition-all flex items-center justify-center shadow-sm">
+                                    Explore the Process
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                    // Layer 2: Pipeline Topology
+                    const pipelineSchema = ['Industrial Waste', 'Material Analysis', 'Conversion Pathway', 'New Product', 'Market'];
+                    const layerPipeline = `
+                        <div class="w-full mb-32 relative">
+                            <h3 class="text-xs font-mono text-emerald-700 dark:text-emerald-500 font-bold uppercase tracking-widest text-center mb-14">Value Recovery Pipeline</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-0 items-center w-full relative">
+                                ${pipelineSchema.map((step, idx) => `
+                                    <div class="relative group flex flex-col items-center w-full">
+                                        <div class="glass-panel w-full max-w-[200px] rounded-2xl p-6 text-center transition-all duration-300 hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.15)] relative z-10">
+                                            <div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-5 text-emerald-600 dark:text-emerald-400 font-mono text-lg font-bold group-hover:scale-110 group-hover:bg-emerald-50 dark:group-hover:bg-emerald-500/10 transition-all border border-transparent group-hover:border-emerald-500/30">
+                                                0${idx + 1}
+                                            </div>
+                                            <h4 class="font-semibold text-slate-900 dark:text-slate-100 text-sm tracking-tight">${escapeHTML(step)}</h4>
+                                        </div>
+                                        ${idx !== pipelineSchema.length - 1 ? `
+                                            <div class="hidden md:block absolute top-[50%] left-[50%] w-full h-[2px] bg-gradient-to-r from-emerald-500/10 via-emerald-500/40 to-emerald-500/10 transform -translate-y-1/2 z-0">
+                                                <div class="absolute right-[5%] top-1/2 transform -translate-y-1/2 w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></div>
+                                            </div>
+                                            <div class="md:hidden w-[2px] h-12 bg-gradient-to-b from-emerald-500/20 to-emerald-500/20 mx-auto my-2"></div>
+                                        ` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+
+                    // Layer 3: Reactive KPI Grid
+                    const kpiSchema = [
+                        { label: 'Waste Recovery', value: 428900, unit: ' Metric Tons', format: 'number' },
+                        { label: 'Material Reused', value: 84.2, unit: '% Efficiency', format: 'float' },
+                        { label: 'Potential Value Generated', value: 14.8, prefix: '₹', unit: ' Crores', format: 'float' },
+                        { label: 'Carbon (CO2) Offset', value: 24190, unit: ' Tons', format: 'number' }
+                    ];
+                    
+                    const layerKPI = `
+                        <div class="w-full">
+                            <div class="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4 border-b border-slate-200 dark:border-slate-800/50 pb-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-6 bg-emerald-500 rounded-full"></div>
+                                    <h3 class="text-sm font-mono text-slate-900 dark:text-slate-200 font-bold uppercase tracking-widest">Network Analytics</h3>
+                                </div>
+                                <span class="flex items-center gap-2 text-[10px] font-mono text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-500/10 px-3 py-1.5 rounded-md font-bold uppercase border border-emerald-500/20">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    LIVE SYNC DATA STREAM
+                                </span>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                ${kpiSchema.map(kpi => `
+                                    <div class="glass-panel rounded-2xl p-7 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-emerald-500/30 group">
+                                        <h4 class="text-slate-600 dark:text-slate-400 text-sm font-medium mb-5 flex items-center justify-between">
+                                            ${escapeHTML(kpi.label)}
+                                            <svg class="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                                        </h4>
+                                        <div class="flex items-baseline gap-1 mb-1">
+                                            ${kpi.prefix ? `<span class="text-3xl text-emerald-600 dark:text-emerald-500 font-bold">${escapeHTML(kpi.prefix)}</span>` : ''}
+                                            <span class="text-4xl font-extrabold text-slate-900 dark:text-white data-kpi tracking-tight" data-metric-val="${kpi.value}" data-metric-fmt="${kpi.format}">0</span>
+                                        </div>
+                                        <div class="text-[13px] text-emerald-700 dark:text-emerald-400 font-mono mb-6 font-medium">${escapeHTML(kpi.unit)}</div>
+                                        <div class="w-full h-[1px] bg-slate-200 dark:bg-slate-800 mb-4"></div>
+                                        <div class="flex items-start gap-2">
+                                            <svg class="w-3.5 h-3.5 text-slate-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-widest font-semibold leading-relaxed">${escapeHTML("Illustrative Sandbox Analytics")}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+
+                    container.innerHTML = layerHero + layerPipeline + layerKPI;
+
+                    // Strict Bindings
+                    container.querySelector('#action-start').addEventListener('click', () => this.navigate('Dashboard'));
+                    container.querySelector('#action-explore').addEventListener('click', () => this.navigate('Conversion Engine'));
+
+                    return container;
+                },
+
+                buildDashboardView: function() {
+                    const container = document.createElement('div');
+                    container.className = 'w-full max-w-[1200px] mx-auto px-6 pt-12 pb-24 flex-grow flex flex-col relative z-10';
+
+                    const html = `
+                        <div class="mb-10 text-center md:text-left">
+                            <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3">Factory Dashboard & Assessment</h2>
+                            <p class="text-slate-600 dark:text-slate-400 text-lg max-w-2xl">Register active manufacturing byproducts to determine material recoverability and optimal conversion pathways.</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <!-- Input Form -->
+                            <div class="lg:col-span-2">
+                                <div class="glass-panel rounded-[2rem] p-8 md:p-10 relative overflow-hidden">
+                                    <div class="absolute top-0 right-0 p-6 opacity-[0.03] dark:opacity-[0.05] pointer-events-none scale-150 transform translate-x-4 -translate-y-4">
+                                        <svg class="w-32 h-32 text-slate-900 dark:text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b border-slate-200 dark:border-slate-800 pb-4 relative z-10">Material Intake Registration</h3>
+                                    
+                                    <form id="assessment-form" class="space-y-6 relative z-10">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div class="space-y-2">
+                                                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Waste Type</label>
+                                                <select id="input-waste-type" class="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-sm">
+                                                    <option value="" disabled selected>Select Material</option>
+                                                    <option value="Foundry Sand">Foundry Sand</option>
+                                                    <option value="Plastic Scrap">Plastic Scrap</option>
+                                                    <option value="Textile Waste">Textile Waste</option>
+                                                    <option value="Glass Waste">Glass Waste</option>
+                                                    <option value="Fly Ash">Fly Ash</option>
+                                                    <option value="Metal Scrap">Metal Scrap</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="space-y-2">
+                                                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Quantity & Unit</label>
+                                                <div class="flex gap-2">
+                                                    <input type="number" id="input-quantity" placeholder="10000" class="w-2/3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-sm" required>
+                                                    <input type="text" value="kg/month" readonly class="w-1/3 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-slate-500 dark:text-slate-400 font-mono text-xs select-none shadow-sm text-center">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="space-y-2">
+                                                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Source Location</label>
+                                                <input type="text" id="input-location" placeholder="Indore, Madhya Pradesh" class="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-sm">
+                                            </div>
+                                            
+                                            <div class="space-y-2">
+                                                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Generation Frequency</label>
+                                                <select id="input-frequency" class="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-sm">
+                                                    <option value="Batch">Batch</option>
+                                                    <option value="Continuous">Continuous</option>
+                                                    <option value="Weekly">Weekly</option>
+                                                    <option value="Monthly">Monthly</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="space-y-2">
+                                                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Contamination Index</label>
+                                                <select id="input-contamination" class="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-sm">
+                                                    <option value="Low">Low</option>
+                                                    <option value="Moderate">Moderate</option>
+                                                    <option value="High">High</option>
+                                                    <option value="Highly Complex">Highly Complex</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="space-y-2">
+                                                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Current Disposal Method</label>
+                                                <select id="input-disposal" class="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all shadow-sm">
+                                                    <option value="Landfill Storage">Landfill Storage</option>
+                                                    <option value="Incineration">Incineration</option>
+                                                    <option value="Outsourced Hauling">Outsourced Hauling</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="pt-6">
+                                            <button type="submit" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.5)] flex items-center justify-center gap-3 group border border-emerald-500/50">
+                                                <svg class="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                                <span>Run Material Assessment Engine</span>
+                                            </button>
+                                        </div>
+                                    </form>
+                                    
+                                    <div class="mt-8 flex items-start gap-3 bg-slate-100/50 dark:bg-slate-900/40 p-5 rounded-xl border border-slate-200 dark:border-slate-800 relative z-10">
+                                        <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                        <p class="text-[11px] text-slate-500 dark:text-slate-400 font-mono leading-relaxed">
+                                            LEGAL WARNING: Conversion recommendations are prototype estimates and require comprehensive laboratory validation and regulatory compliance before commercial deployment.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Assessment Output Card -->
+                            <div class="lg:col-span-1">
+                                <div id="assessment-output" class="glass-panel rounded-[2rem] p-8 h-full flex flex-col justify-center items-center text-center opacity-50 transition-all duration-500 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                                    <div id="output-placeholder" class="text-slate-400 dark:text-slate-500 flex flex-col items-center">
+                                        <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center mb-4">
+                                            <svg class="w-8 h-8 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                        </div>
+                                        <p class="font-medium text-sm">Submit assessment to view vector pathways.</p>
+                                    </div>
+                                    
+                                    <div id="output-content" class="hidden w-full text-left flex-col gap-6 relative z-10">
+                                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 rounded-md text-[10px] font-mono font-bold self-start border border-emerald-500/30">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                            ASSESSMENT COMPLETE
+                                        </div>
+                                        
+                                        <div>
+                                            <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-mono font-semibold mb-1">Material Tracked</p>
+                                            <p id="out-material" class="text-xl font-extrabold text-slate-900 dark:text-white">--</p>
+                                        </div>
+                                        
+                                        <div class="w-full h-px bg-slate-200 dark:bg-slate-800"></div>
+                                        
+                                        <div>
+                                            <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-mono font-semibold mb-1">Verified Recoverability</p>
+                                            <p class="text-4xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">82% <span class="text-sm font-normal text-slate-500 dark:text-slate-500 ml-1">(Estimate)</span></p>
+                                        </div>
+                                        
+                                        <div class="w-full h-px bg-slate-200 dark:bg-slate-800"></div>
+                                        
+                                        <div>
+                                            <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-mono font-semibold mb-1">Recommended Pathway Vector</p>
+                                            <p class="text-lg font-bold text-slate-900 dark:text-white">Construction Materials</p>
+                                        </div>
+                                        
+                                        <div class="w-full h-px bg-slate-200 dark:bg-slate-800"></div>
+                                        
+                                        <div>
+                                            <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-mono font-semibold mb-1">Target Downstream Asset</p>
+                                            <div class="flex items-center gap-3 bg-slate-100 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 mt-2">
+                                                <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex flex-shrink-0 items-center justify-center text-emerald-600 dark:text-emerald-400">
+                                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                                </div>
+                                                <p class="font-bold text-slate-900 dark:text-white">Interlocking Paver Blocks</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML = html;
+
+                    // Event logic for form submission
+                    const form = container.querySelector('#assessment-form');
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        
+                        // Strict validation and sanitization
+                        const typeInput = container.querySelector('#input-waste-type').value;
+                        const qtyInput = parseFloat(container.querySelector('#input-quantity').value || 0);
+                        
+                        if(!typeInput) {
+                            alert('Please select a Waste Type.');
+                            return;
+                        }
+                        
+                        if(isNaN(qtyInput) || qtyInput <= 0) {
+                            alert('Please enter a valid positive quantity.');
+                            return;
+                        }
+
+                        const sanitizedType = escapeHTML(typeInput);
+
+                        // Trigger animation & display output
+                        const outputCard = container.querySelector('#assessment-output');
+                        const placeholder = container.querySelector('#output-placeholder');
+                        const content = container.querySelector('#output-content');
+                        const matDisplay = container.querySelector('#out-material');
+                        
+                        matDisplay.textContent = sanitizedType;
+                        
+                        // Flash effect
+                        outputCard.classList.remove('opacity-50', 'border-slate-200', 'dark:border-slate-800');
+                        outputCard.classList.add('border-emerald-500/50', 'bg-emerald-500/5', 'shadow-xl');
+                        
+                        placeholder.classList.add('hidden');
+                        content.classList.remove('hidden');
+                        content.classList.add('flex');
+                        
+                        setTimeout(() => {
+                            outputCard.classList.remove('bg-emerald-500/5');
+                        }, 500);
+                    });
+
+                    return container;
+                },
+
+                buildConversionEngineView: function() {
+                    const container = document.createElement('div');
+                    container.className = 'w-full max-w-[1300px] mx-auto px-6 pt-12 pb-24 flex-grow flex flex-col relative z-10';
+
+                    const pathways = [
+                        { input: 'Plastic Scrap', process: 'Thermal Extrusion', output: 'Composite Structural Lumber', sector: 'Construction & Real Estate', value: '₹120-150 / kg', eco: 'Offsets 2.1kg CO2 per kg' },
+                        { input: 'Textile Waste', process: 'Shredding & Bonding', output: 'High-Density Acoustic Insulation Panels', sector: 'Architecture & Auto', value: '₹400-600 / sq.m', eco: 'Zero water waste processing' },
+                        { input: 'Glass Waste', process: 'Crushing & Sifting', output: 'Fine Construction Aggregate Sand Substitute', sector: 'Civil Infrastructure', value: '₹80-100 / ton', eco: 'Preserves river sand ecosystems' },
+                        { input: 'Fly Ash', process: 'Geopolymerization', output: 'Geo-polymer Building Materials & Green Cement', sector: 'Heavy Construction', value: '₹200-250 / bag', eco: 'Reduces cement carbon footprint 80%' },
+                        { input: 'Metal Scrap', process: 'Purification & Alloying', output: 'High-Purity Recovered Secondary Raw Alloys', sector: 'Manufacturing', value: 'Market Linked', eco: '95% energy saved vs virgin mining' }
+                    ];
+
+                    const html = `
+                        <div class="mb-12 text-center">
+                            <h2 class="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">RE-FORM Conversion Engine</h2>
+                            <p class="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">What Can Your Waste Become? A matrix visualization matching industrial waste inputs to high-value functional outputs.</p>
+                        </div>
+                        
+                        <!-- Primary Active Loop -->
+                        <div class="glass-panel rounded-[2rem] p-8 md:p-12 mb-16 border border-emerald-500/30 shadow-[0_10px_40px_-10px_rgba(16,185,129,0.2)] relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                            <div class="absolute bottom-0 left-0 w-64 h-64 bg-teal-500/5 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
+                            
+                            <div class="flex flex-col md:flex-row items-center gap-8 relative z-10">
+                                <div class="w-full md:w-2/5 flex flex-col items-center text-center p-6 bg-white/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800">
+                                    <div class="inline-flex items-center gap-2 text-[10px] font-mono text-emerald-700 dark:text-emerald-400 uppercase tracking-widest font-bold mb-4 bg-emerald-100 dark:bg-emerald-500/20 px-3 py-1.5 rounded-md">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                        Primary Active Vector
+                                    </div>
+                                    <h4 class="text-3xl font-extrabold text-slate-900 dark:text-white mb-2">Foundry Sand + Waste Plastic</h4>
+                                    <p class="text-slate-600 dark:text-slate-400 font-medium">Abundant industrial byproducts</p>
+                                </div>
+                                
+                                <div class="w-full md:w-1/5 flex justify-center">
+                                    <div class="flex items-center gap-3 w-full">
+                                        <div class="h-[2px] flex-grow bg-slate-300 dark:bg-slate-700"></div>
+                                        <div class="w-16 h-16 rounded-full bg-emerald-500 flex flex-shrink-0 items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.4)] relative">
+                                            <div class="absolute inset-0 rounded-full border-2 border-emerald-400 animate-ping opacity-20"></div>
+                                            <svg class="w-8 h-8 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                        </div>
+                                        <div class="h-[2px] flex-grow bg-slate-300 dark:bg-slate-700"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="w-full md:w-2/5 flex flex-col items-center text-center p-6 bg-white/50 dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 border-b-4 border-b-emerald-500">
+                                    <div class="inline-flex items-center gap-2 text-[10px] font-mono text-slate-600 dark:text-slate-300 uppercase tracking-widest font-bold mb-4 bg-slate-200 dark:bg-slate-800 px-3 py-1.5 rounded-md">
+                                        Commercial Output
+                                    </div>
+                                    <h4 class="text-3xl font-extrabold text-slate-900 dark:text-white mb-2">Recycled Construction Pavers</h4>
+                                    <p class="text-slate-600 dark:text-slate-400 font-medium">High-durability interlocking blocks</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Expansion Pathways Catalog -->
+                        <div class="flex items-center justify-between mb-8 border-b border-slate-200 dark:border-slate-800 pb-4">
+                            <h3 class="text-xl font-extrabold text-slate-900 dark:text-white flex items-center gap-3">
+                                <div class="w-8 h-8 rounded bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                </div>
+                                Future Expansion Pathways
+                            </h3>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            ${pathways.map((path, i) => `
+                                <div class="glass-panel rounded-2xl p-6 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 group border-l-4 border-l-slate-300 dark:border-l-slate-700 hover:border-l-emerald-500 flex flex-col relative overflow-hidden">
+                                    <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl -mr-10 -mt-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                    <div class="flex items-center gap-4 mb-6 relative z-10">
+                                        <div class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center text-sm font-black text-slate-500 dark:text-slate-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 group-hover:bg-emerald-50 dark:group-hover:bg-emerald-500/10 transition-colors border border-slate-200 dark:border-slate-700">0${i+1}</div>
+                                        <h4 class="text-xl font-bold text-slate-900 dark:text-white flex items-center flex-wrap gap-2">
+                                            ${escapeHTML(path.input)} 
+                                            <span class="text-slate-300 dark:text-slate-600">→</span> 
+                                            <span class="text-emerald-600 dark:text-emerald-400">${escapeHTML(path.output)}</span>
+                                        </h4>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-y-6 gap-x-8 mt-auto bg-slate-50/50 dark:bg-slate-900/30 rounded-xl p-5 border border-slate-200/50 dark:border-slate-800/50 relative z-10">
+                                        <div>
+                                            <p class="text-[10px] text-slate-500 dark:text-slate-500 uppercase font-mono font-bold mb-1.5 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-600"></span> Processing Stages</p>
+                                            <p class="text-sm font-semibold text-slate-900 dark:text-slate-200">${escapeHTML(path.process)}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] text-slate-500 dark:text-slate-500 uppercase font-mono font-bold mb-1.5 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-600"></span> Market Sector</p>
+                                            <p class="text-sm font-semibold text-slate-900 dark:text-slate-200">${escapeHTML(path.sector)}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] text-slate-500 dark:text-slate-500 uppercase font-mono font-bold mb-1.5 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Estimated Valuation</p>
+                                            <p class="text-sm font-bold text-emerald-600 dark:text-emerald-400">${escapeHTML(path.value)}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] text-slate-500 dark:text-slate-500 uppercase font-mono font-bold mb-1.5 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> Ecological Benefit</p>
+                                            <p class="text-sm font-semibold text-slate-900 dark:text-slate-200">${escapeHTML(path.eco)}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    container.innerHTML = html;
+                    return container;
+                },
+
+                buildProcessPipelineView: function() {
+                    const container = document.createElement('div');
+                    container.className = 'w-full max-w-[1400px] mx-auto px-6 pt-12 pb-24 flex-grow flex flex-col relative z-10';
+                    
+                    const pipelineData = [
+                        { stage: 'COLLECTION', desc: 'Foundry sand and plastic polymers are sourced from partnered industrial networks via secure logistics.' },
+                        { stage: 'SORTING', desc: 'Automated screening separates ferrous contaminants and non-compliant polymer grades.' },
+                        { stage: 'CLEANING', desc: 'Dry-cleaning protocols remove organic residues from sand without water waste.' },
+                        { stage: 'PROCESSING', desc: 'Plastics are shredded to precise micro-granules; sand is sifted for optimal particulate size.' },
+                        { stage: 'MIXING & FORM', desc: 'Proprietary thermal mixing blends sand and plastic at exact ratios under controlled heat.' },
+                        { stage: 'MOULDING', desc: 'The composite matrix is hydraulically pressed into standardized interlocking paver moulds.' },
+                        { stage: 'TESTING', desc: 'Compression and water-absorption tests verify adherence to IS 15658 standard protocols.' },
+                        { stage: 'FINAL PRODUCT', desc: 'Cured structural paving blocks are palletized for dispatch to commercial infrastructure sites.' }
+                    ];
+
+                    const html = `
+                        <div class="mb-12 text-center">
+                            <h2 class="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">Waste-to-Product Process Pipeline</h2>
+                            <p class="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">Interactive 8-stage industrial processing architecture converting Foundry Sand and Plastic Polymers into high-durability structural blocks.</p>
+                        </div>
+                        
+                        <div class="flex flex-col lg:flex-row gap-8 min-h-[550px]">
+                            <!-- Pipeline Graph (Left) -->
+                            <div class="w-full lg:w-2/3 glass-panel rounded-[2rem] p-8 md:p-12 flex flex-col justify-center relative overflow-hidden">
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-12 relative z-10">
+                                    <!-- Connecting Lines Background (Horizontal for Desktop) -->
+                                    <div class="hidden md:block absolute top-[25%] left-[10%] w-[80%] h-[2px] bg-slate-200 dark:bg-slate-700/80 -z-10"></div>
+                                    <div class="hidden md:block absolute top-[75%] left-[10%] w-[80%] h-[2px] bg-slate-200 dark:bg-slate-700/80 -z-10"></div>
+                                    
+                                    <!-- Connecting Lines Background (Vertical for Mobile) -->
+                                    <div class="md:hidden absolute top-[5%] left-[25%] w-[2px] h-[90%] bg-slate-200 dark:bg-slate-700/80 -z-10"></div>
+                                    <div class="md:hidden absolute top-[5%] left-[75%] w-[2px] h-[90%] bg-slate-200 dark:bg-slate-700/80 -z-10"></div>
+                                    
+                                    ${pipelineData.map((node, index) => `
+                                        <div class="flex flex-col items-center relative z-10 group cursor-pointer pipeline-node" data-idx="${index}">
+                                            <div class="w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 flex items-center justify-center text-xl font-extrabold text-slate-400 dark:text-slate-500 transition-all duration-300 group-hover:border-emerald-500 group-hover:text-emerald-500 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] shadow-sm node-icon relative">
+                                                0${index+1}
+                                                <div class="absolute -bottom-2 -right-2 w-4 h-4 rounded-full bg-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center shadow-sm">
+                                                    <div class="w-2 h-2 rounded-full bg-white"></div>
+                                                </div>
+                                            </div>
+                                            <p class="mt-5 text-[11px] font-bold text-center text-slate-600 dark:text-slate-300 uppercase tracking-widest node-title transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400 max-w-[100px] leading-tight">${escapeHTML(node.stage)}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            
+                            <!-- Information Panel (Right) -->
+                            <div class="w-full lg:w-1/3 glass-panel rounded-[2rem] p-8 border border-emerald-500/20 bg-emerald-50/30 dark:bg-slate-900/60 flex flex-col relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none"></div>
+                                
+                                <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 rounded-md text-[10px] font-mono font-bold self-start mb-8 shadow-sm">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    ACTIVE STAGE TELEMETRY
+                                </div>
+                                
+                                <div id="panel-empty" class="flex flex-col items-center justify-center h-full text-center text-slate-400 dark:text-slate-500 pb-12">
+                                    <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 flex items-center justify-center mb-5">
+                                        <svg class="w-8 h-8 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                                    </div>
+                                    <p class="font-medium">Select a pipeline node to view specific operational instructions.</p>
+                                </div>
+                                
+                                <div id="panel-content" class="hidden flex-col h-full relative z-10 transition-opacity duration-300">
+                                    <div class="text-sm font-mono text-emerald-600 dark:text-emerald-500 font-bold mb-1" id="panel-step">--</div>
+                                    <h3 id="panel-title" class="text-3xl font-extrabold text-slate-900 dark:text-white mb-4 leading-tight">--</h3>
+                                    
+                                    <div class="w-full h-px bg-emerald-500/20 dark:bg-emerald-500/30 my-5"></div>
+                                    
+                                    <div class="bg-white/50 dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-700/80">
+                                        <p class="text-[10px] text-emerald-700 dark:text-emerald-400 font-mono font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                            Operational Protocol
+                                        </p>
+                                        <p id="panel-desc" class="text-slate-700 dark:text-slate-300 leading-relaxed text-sm font-medium"></p>
+                                    </div>
+                                    
+                                    <div class="mt-auto pt-8 flex items-center justify-between text-[10px] font-mono font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                                        <span>Status: ONLINE</span>
+                                        <span>Latency: 14ms</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.innerHTML = html;
+                    
+                    const nodes = container.querySelectorAll('.pipeline-node');
+                    const emptyState = container.querySelector('#panel-empty');
+                    const contentState = container.querySelector('#panel-content');
+                    const stepEl = container.querySelector('#panel-step');
+                    const titleEl = container.querySelector('#panel-title');
+                    const descEl = container.querySelector('#panel-desc');
+                    
+                    nodes.forEach(node => {
+                        node.addEventListener('click', () => {
+                            // Reset all
+                            nodes.forEach(n => {
+                                n.querySelector('.node-icon').classList.remove('bg-emerald-500', 'text-white', 'border-emerald-500', 'shadow-[0_0_20px_rgba(16,185,129,0.3)]');
+                                n.querySelector('.node-title').classList.remove('text-emerald-600', 'dark:text-emerald-400');
+                                
+                                n.querySelector('.node-icon').classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-400', 'dark:text-slate-500', 'border-slate-200', 'dark:border-slate-700');
+                            });
+                            
+                            // Highlight selected
+                            const icon = node.querySelector('.node-icon');
+                            const title = node.querySelector('.node-title');
+                            
+                            icon.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-400', 'dark:text-slate-500', 'border-slate-200', 'dark:border-slate-700');
+                            icon.classList.add('bg-emerald-500', 'text-white', 'border-emerald-500', 'shadow-[0_0_20px_rgba(16,185,129,0.3)]');
+                            title.classList.add('text-emerald-600', 'dark:text-emerald-400');
+                            
+                            // Update panel
+                            const idx = parseInt(node.getAttribute('data-idx'));
+                            const data = pipelineData[idx];
+                            
+                            stepEl.textContent = `STAGE 0${idx+1}`;
+                            titleEl.textContent = escapeHTML(data.stage);
+                            descEl.textContent = escapeHTML(data.desc);
+                            
+                            emptyState.classList.add('hidden');
+                            contentState.classList.remove('hidden');
+                            contentState.classList.add('flex');
+                            
+                            // Simple visual transition reset
+                            contentState.style.opacity = '0';
+                            setTimeout(() => { contentState.style.opacity = '1'; }, 50);
+                        });
+                    });
+                    
+                    // --- APPEND STARTUP TECHNOLOGY BLUEPRINT ---
+                    const blueprintHtml = `
+                        <div class="mt-20 pt-16 border-t border-slate-200 dark:border-slate-800">
+                            <div class="mb-12 text-center">
+                                <h2 class="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">Startup Technology Blueprint</h2>
+                                <p class="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">Architectural flow chart detailing digital ingestion and conversion mechanics.</p>
+                            </div>
+                            
+                            <div class="glass-panel rounded-[2rem] p-8 relative overflow-hidden bg-white/40 dark:bg-slate-900/40">
+                                <div class="flex flex-col xl:flex-row items-center justify-between gap-4">
+                                    ${['Factory Floor', 'Web Ingestion Node', 'Validation Data Engine', 'Matching AI Logic Matrix', 'Supplier Network API', 'Finished Product Valuation', 'Global Commercial Outlets'].map((node, i, arr) => `
+                                        <div class="flex flex-col items-center flex-1 w-full xl:w-auto min-w-[120px]">
+                                            <div class="w-full text-center px-4 py-3 bg-white dark:bg-slate-800 rounded-lg border border-emerald-500/30 shadow-sm relative z-10 text-xs font-bold text-slate-800 dark:text-slate-200">
+                                                ${escapeHTML(node)}
+                                            </div>
+                                            ${i !== arr.length - 1 ? `<div class="h-6 xl:h-0 xl:w-6 border-l-2 xl:border-l-0 xl:border-t-2 border-dashed border-emerald-500/50 my-1 xl:my-0 xl:mx-2"></div>` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                
+                                <div class="mt-12 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-6 text-center max-w-4xl mx-auto">
+                                    <div class="inline-flex items-center gap-2 mb-3">
+                                        <svg class="w-5 h-5 text-emerald-600 dark:text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                        <h4 class="font-bold text-emerald-800 dark:text-emerald-400">Cryptographic Ledger Layer</h4>
+                                    </div>
+                                    <p class="text-sm text-slate-700 dark:text-slate-300 font-medium">The ledger layer is strictly responsible for verifying supply-chain integrity, recording custody handoffs, and generating audit trails. It does not handle the physical recycling mechanics, but rather ensures transparency, compliance, and trust across the B2B ecosystem.</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    const blueprintWrapper = document.createElement('div');
+                    blueprintWrapper.innerHTML = blueprintHtml;
+                    container.appendChild(blueprintWrapper);
+
+                    return container;
+                },
+
+                buildTrackerView: function() {
+                    const container = document.createElement('div');
+                    container.className = 'w-full max-w-[1200px] mx-auto px-6 pt-12 pb-24 flex-grow flex flex-col relative z-10';
+
+                    const html = `
+                        <div class="mb-10 text-center md:text-left">
+                            <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3">Cryptographic Material Batch Tracker</h2>
+                            <p class="text-slate-600 dark:text-slate-400 text-lg max-w-2xl font-mono text-sm bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500 inline-block px-3 py-1 rounded">Traceability Simulation Node - Non-Production Sandbox Architecture.</p>
+                        </div>
+
+                        <div class="glass-panel rounded-[2rem] p-8 mb-10 flex flex-col md:flex-row gap-6 items-end relative overflow-hidden shadow-lg border border-emerald-500/20">
+                            <div class="absolute inset-0 bg-grid-slate opacity-20 pointer-events-none"></div>
+                            <div class="flex-grow w-full space-y-2 relative z-10">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-widest font-mono">Batch Identifier</label>
+                                <input type="text" id="tracker-input" value="RF-2026-001" class="w-full bg-white dark:bg-slate-900/80 border border-slate-300 dark:border-slate-600 rounded-xl px-5 py-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 font-mono text-xl font-bold shadow-inner">
+                            </div>
+                            <button id="verify-ledger-btn" class="w-full md:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2 relative z-10">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                Verify Ledger Integrity
+                            </button>
+                        </div>
+
+                        <div id="ledger-output" class="hidden flex-col lg:flex-row gap-8 mt-4 animate-fade-in">
+                            <!-- Verification Card -->
+                            <div class="w-full lg:w-1/2 glass-panel rounded-[2rem] p-8 border border-emerald-500/30 relative">
+                                <div class="absolute top-4 right-4 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono text-[10px] px-2 py-1 rounded font-bold uppercase tracking-widest flex items-center gap-1.5 border border-emerald-500/30">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    VERIFIED
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b border-slate-200 dark:border-slate-800 pb-3">Immutable Ledger Record</h3>
+                                
+                                <div class="space-y-4">
+                                    ${[
+                                        { label: 'Source Facility', value: 'Demo Foundry Pvt. Ltd.' },
+                                        { label: 'Waste Profile', value: 'Foundry Sand' },
+                                        { label: 'Quantity', value: '10,000 kg' },
+                                        { label: 'Ingestion Date', value: new Date().toLocaleDateString() + ' 08:30 AM' },
+                                        { label: 'Associated Processing Hub', value: 'RE-FORM Hub Beta' },
+                                        { label: 'Target Assembly Pathway', value: 'Construction Pavers' },
+                                        { label: 'Inspection Pass Status', value: 'Cleared (Grade A)' },
+                                        { label: 'Delivery Destination', value: 'National Highway Authority Project 4A' }
+                                    ].map(item => `
+                                        <div class="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800/50">
+                                            <span class="text-xs text-slate-500 uppercase tracking-widest font-semibold">${item.label}</span>
+                                            <span class="text-sm font-bold text-slate-900 dark:text-white text-right">${item.value}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            
+                            <!-- Timeline -->
+                            <div class="w-full lg:w-1/2 glass-panel rounded-[2rem] p-8 relative overflow-hidden">
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6 border-b border-slate-200 dark:border-slate-800 pb-3">Custody Checkpoints</h3>
+                                <div class="relative pl-6 space-y-6">
+                                    <!-- Timeline line -->
+                                    <div class="absolute top-2 bottom-2 left-2.5 w-[2px] bg-emerald-500/20"></div>
+                                    
+                                    ${['Generated', 'Collected', 'Processed', 'Converted', 'Tested', 'Sold'].map((stage, i) => `
+                                        <div class="relative flex items-center justify-between group">
+                                            <!-- Timeline Dot -->
+                                            <div class="absolute -left-6 w-3 h-3 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)] ring-4 ring-emerald-500/20"></div>
+                                            
+                                            <div class="flex flex-col">
+                                                <span class="font-bold text-slate-900 dark:text-white text-sm uppercase tracking-wide">${stage}</span>
+                                                <span class="text-xs text-slate-500">${new Date(Date.now() - (5-i)*86400000).toLocaleDateString()}</span>
+                                            </div>
+                                            
+                                            <div class="bg-slate-100 dark:bg-slate-900 px-3 py-1.5 rounded border border-slate-200 dark:border-slate-800">
+                                                <span class="font-mono text-[10px] text-emerald-600 dark:text-emerald-500 font-bold opacity-80 group-hover:opacity-100 transition-opacity">
+                                                    SHA-256: 0x${Math.random().toString(16).substr(2, 8)}...${Math.random().toString(16).substr(2, 4)}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    container.innerHTML = html;
+
+                    const btn = container.querySelector('#verify-ledger-btn');
+                    const output = container.querySelector('#ledger-output');
+                    
+                    btn.addEventListener('click', () => {
+                        const val = container.querySelector('#tracker-input').value;
+                        if (!val.trim()) return;
+                        
+                        // Fake loading state
+                        btn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Analyzing Blockchain...';
+                        
+                        setTimeout(() => {
+                            btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg> Integrity Verified';
+                            btn.classList.replace('bg-emerald-600', 'bg-teal-600');
+                            
+                            output.classList.remove('hidden');
+                            output.classList.add('flex');
+                            output.style.opacity = '0';
+                            setTimeout(() => { output.style.opacity = '1'; }, 50);
+                        }, 1200);
+                    });
+
+                    return container;
+                },
+
+                buildMarketplaceView: function() {
+                    const container = document.createElement('div');
+                    container.className = 'w-full max-w-[1400px] mx-auto px-6 pt-12 pb-24 flex-grow flex flex-col relative z-10';
+
+                    const html = `
+                        <div class="mb-12 text-center md:text-left">
+                            <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3">B2B Procurement Marketplace</h2>
+                            <p class="text-slate-600 dark:text-slate-400 text-lg max-w-2xl">Dual-pane active trading marketplace linking industrial waste generators directly with verified recycling processors.</p>
+                        </div>
+                        
+                        <div class="flex flex-col xl:flex-row gap-8">
+                            <!-- Section A: Inventory -->
+                            <div class="w-full xl:w-1/2 flex flex-col gap-6">
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
+                                    <div class="w-2 h-6 bg-emerald-500 rounded-full"></div> Available Waste Streams
+                                </h3>
+                                
+                                ${[
+                                    { name: 'Industrial Plastic Scrap (HDPE)', qty: '10k kg', loc: 'Indore, MP' },
+                                    { name: 'Contaminated Foundry Sand', qty: '5k kg', loc: 'Bhopal, MP' },
+                                    { name: 'Mixed Textile Offcuts', qty: '3.2k kg', loc: 'Vidisha, MP' }
+                                ].map(item => `
+                                    <div class="glass-panel rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:border-emerald-500/50 transition-colors shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                        <div class="flex flex-col">
+                                            <div class="inline-flex items-center gap-1.5 px-2 py-1 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 rounded text-[9px] font-mono font-bold self-start mb-2 uppercase border border-emerald-500/20">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                                Available For Matchmaking
+                                            </div>
+                                            <h4 class="text-lg font-extrabold text-slate-900 dark:text-white leading-tight">${item.name}</h4>
+                                            <p class="text-sm font-medium text-slate-500 mt-1 flex items-center gap-1">
+                                                <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                                Source: ${item.loc}
+                                            </p>
+                                        </div>
+                                        <div class="flex flex-col items-end">
+                                            <span class="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-1">Quantified Mass</span>
+                                            <span class="text-2xl font-black text-emerald-600 dark:text-emerald-400">${item.qty}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <!-- Section B: Processors -->
+                            <div class="w-full xl:w-1/2 flex flex-col gap-6">
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-2">
+                                    <div class="w-2 h-6 bg-blue-500 rounded-full"></div> Verified Processing Facilities
+                                </h3>
+                                
+                                ${[
+                                    { name: 'EcoMat Converters Ltd.', cap: 'Foundry Sand, Plastic', vol: '20,000 kg/mo', cert: 'ISO 14001, OHSAS 18001' },
+                                    { name: 'GreenTextile Hub', cap: 'Textile Waste, Cottons', vol: '15,000 kg/mo', cert: 'Global Recycle Standard' }
+                                ].map(proc => `
+                                    <div class="glass-panel rounded-2xl p-6 border-t-4 border-t-blue-500 shadow-lg flex flex-col relative overflow-hidden">
+                                        <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
+                                        
+                                        <h4 class="text-xl font-extrabold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                                            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                            ${proc.name}
+                                        </h4>
+                                        
+                                        <div class="grid grid-cols-2 gap-4 mb-6">
+                                            <div>
+                                                <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Acceptance Capabilities</p>
+                                                <p class="text-sm font-semibold text-slate-800 dark:text-slate-200">${proc.cap}</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Mechanical Volume</p>
+                                                <p class="text-sm font-semibold text-slate-800 dark:text-slate-200">${proc.vol}</p>
+                                            </div>
+                                            <div class="col-span-2">
+                                                <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Operational Certifications</p>
+                                                <p class="text-sm font-mono text-blue-600 dark:text-blue-400 font-bold">${proc.cert}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex flex-wrap gap-3 mt-auto">
+                                            <button class="flex-1 min-w-[120px] px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-lg transition-colors text-center border border-slate-200 dark:border-slate-700">View Asset Specs</button>
+                                            <button class="flex-1 min-w-[120px] px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-lg transition-colors text-center border border-slate-200 dark:border-slate-700">Request Allocation</button>
+                                            <button class="flex-1 min-w-[120px] px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-lg transition-all shadow-[0_0_15px_rgba(59,130,246,0.4)] text-center">Initiate Secure Connection</button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+
+                    container.innerHTML = html;
+                    return container;
+                },
+
+                buildCalculatorView: function() {
+                    const container = document.createElement('div');
+                    container.className = 'w-full max-w-[1100px] mx-auto px-6 pt-12 pb-24 flex-grow flex flex-col relative z-10';
+
+                    const html = `
+                        <div class="mb-12 text-center md:text-left">
+                            <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-3">Interactive Economic ROI Calculator</h2>
+                            <p class="text-slate-600 dark:text-slate-400 text-lg max-w-2xl">Mathematical projection engine demonstrating the financial logic behind waste-to-wealth conversion.</p>
+                        </div>
+
+                        <div class="flex flex-col lg:flex-row gap-8">
+                            <!-- Inputs Form -->
+                            <div class="w-full lg:w-1/2 glass-panel rounded-[2rem] p-8 border border-slate-200 dark:border-slate-800">
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-6 border-b border-slate-200 dark:border-slate-700 pb-3">Input Parameters</h3>
+                                
+                                <form id="roi-form" class="space-y-5">
+                                    <div class="space-y-1.5">
+                                        <label class="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Waste Mass Volume (kg)</label>
+                                        <input type="number" id="roi-mass" value="10000" class="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 font-mono">
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <label class="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Baseline Disposal Surcharge (₹/kg)</label>
+                                        <input type="number" id="roi-surcharge" value="15" class="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 font-mono">
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <label class="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Processing Overheads (₹/kg)</label>
+                                        <input type="number" id="roi-overhead" value="8" class="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 font-mono">
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <label class="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Finished Product Yield Multiplier (%)</label>
+                                        <input type="number" id="roi-yield" value="85" max="100" class="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 font-mono">
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <label class="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Target Asset Unit Resale Value (₹/kg)</label>
+                                        <input type="number" id="roi-resale" value="45" class="w-full bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-emerald-500 font-mono">
+                                    </div>
+                                </form>
+                                
+                                <div class="mt-6 flex items-start gap-2 bg-amber-50 dark:bg-amber-500/10 p-4 rounded-lg border border-amber-200 dark:border-amber-500/20">
+                                    <svg class="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                    <p class="text-[10px] text-amber-700 dark:text-amber-500 font-bold uppercase tracking-wider">Illustrative prototype calculation — not a commercial valuation quote.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Outputs Panel -->
+                            <div class="w-full lg:w-1/2 glass-panel rounded-[2rem] p-8 border border-emerald-500/30 bg-emerald-50/50 dark:bg-slate-900/80 flex flex-col justify-center shadow-xl">
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-6 border-b border-emerald-500/20 pb-3 flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div> Live Projection Metrics
+                                </h3>
+                                
+                                <div class="space-y-6 flex-grow">
+                                    <div class="flex justify-between items-center bg-white/50 dark:bg-slate-800/50 p-4 rounded-xl">
+                                        <span class="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest">Gross Waste Cost Liability</span>
+                                        <span id="out-liability" class="text-xl font-bold text-red-700 dark:text-red-400 font-mono">₹1,50,000</span>
+                                    </div>
+                                    <div class="flex justify-between items-center bg-white/50 dark:bg-slate-800/50 p-4 rounded-xl">
+                                        <span class="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest">Total Processing Surcharges</span>
+                                        <span id="out-processing" class="text-xl font-bold text-orange-700 dark:text-orange-400 font-mono">₹80,000</span>
+                                    </div>
+                                    <div class="flex justify-between items-center bg-white/50 dark:bg-slate-800/50 p-4 rounded-xl">
+                                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Expected Revenue Run-Rate</span>
+                                        <span id="out-revenue" class="text-xl font-bold text-emerald-700 dark:text-emerald-400 font-mono">₹3,82,500</span>
+                                    </div>
+                                    <div class="w-full h-px bg-slate-200 dark:bg-slate-700 my-4"></div>
+                                    <div class="flex justify-between items-center bg-emerald-500 text-white p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform cursor-default">
+                                        <span class="text-sm font-bold uppercase tracking-widest">Total Asset Value Recaptured</span>
+                                        <span id="out-net" class="text-3xl font-extrabold font-mono">₹3,02,500</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    container.innerHTML = html;
+                    
+                    const form = container.querySelector('#roi-form');
+                    const inputs = form.querySelectorAll('input');
+                    
+                    const elLiability = container.querySelector('#out-liability');
+                    const elProcessing = container.querySelector('#out-processing');
+                    const elRevenue = container.querySelector('#out-revenue');
+                    const elNet = container.querySelector('#out-net');
+                    
+                    const calculate = () => {
+                        const vol = parseFloat(container.querySelector('#roi-mass').value) || 0;
+                        const sur = parseFloat(container.querySelector('#roi-surcharge').value) || 0;
+                        const over = parseFloat(container.querySelector('#roi-overhead').value) || 0;
+                        const yld = parseFloat(container.querySelector('#roi-yield').value) || 0;
+                        const resale = parseFloat(container.querySelector('#roi-resale').value) || 0;
+                        
+                        const liability = vol * sur;
+                        const processing = vol * over;
+                        const netYield = vol * (yld / 100);
+                        const revenue = netYield * resale;
+                        const netValue = revenue - processing;
+                        
+                        const fmt = (num) => '₹' + Math.floor(num).toLocaleString('en-IN');
+                        
+                        elLiability.textContent = fmt(liability);
+                        elProcessing.textContent = fmt(processing);
+                        elRevenue.textContent = fmt(revenue);
+                        elNet.textContent = fmt(netValue);
+                    };
+                    
+                    inputs.forEach(inp => inp.addEventListener('input', calculate));
+                    
+                    return container;
+                },
+
+                buildMetricsView: function() {
+                    const container = document.createElement('div');
+                    container.className = 'w-full max-w-[1200px] mx-auto px-6 pt-12 pb-24 flex-grow flex flex-col relative z-10';
+
+                    const html = `
+                        <div class="mb-12 text-center">
+                            <h2 class="text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">Environmental Impact Dashboard</h2>
+                            <p class="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">Structural data charts contrasting traditional linear disposal against the circular RE-FORM ecosystem pathway.</p>
+                        </div>
+                        
+                        <div class="glass-panel rounded-[2rem] p-10 border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden relative">
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-10 flex items-center gap-3">
+                                <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                Waste Destiny Trajectory Models
+                            </h3>
+                            
+                            <!-- Chart Area -->
+                            <div class="relative h-64 flex flex-col justify-end gap-12 pb-6 border-b border-l border-slate-300 dark:border-slate-700 pl-4">
+                                
+                                <!-- Baseline Bar -->
+                                <div class="relative w-full group">
+                                    <p class="absolute -top-7 left-0 text-[10px] font-bold text-red-500 uppercase tracking-widest">Baseline Path: Immediate Disposal</p>
+                                    <div class="w-[85%] h-8 bg-gradient-to-r from-red-500/20 to-red-500 rounded-r-md relative flex items-center justify-end pr-4 text-white font-bold shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all duration-700 w-0" id="bar-baseline">
+                                        -85% Ecosystem Value
+                                    </div>
+                                </div>
+                                
+                                <!-- RE-FORM Bar -->
+                                <div class="relative w-full group">
+                                    <p class="absolute -top-7 left-0 text-[10px] font-bold text-emerald-500 uppercase tracking-widest">RE-FORM Ecosystem Path: Circular Recovery</p>
+                                    <div class="w-[100%] h-12 bg-gradient-to-r from-emerald-500/20 to-emerald-500 rounded-r-md relative flex items-center justify-end pr-4 text-white font-bold text-lg shadow-[0_0_20px_rgba(16,185,129,0.5)] transition-all duration-700 w-0" id="bar-reform">
+                                        +92% Material Transformation
+                                    </div>
+                                </div>
+                                
+                                <!-- Axis Labels -->
+                                <div class="absolute bottom-0 left-0 w-full flex justify-between transform translate-y-6 text-[10px] font-mono text-slate-400 uppercase">
+                                    <span>Generation</span>
+                                    <span>Recovery</span>
+                                    <span>Transformation</span>
+                                    <span>Monetization</span>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 pt-8 border-t border-slate-200 dark:border-slate-800">
+                                <div class="flex flex-col items-center text-center p-4">
+                                    <span class="text-4xl font-black text-slate-900 dark:text-white mb-2">42K <span class="text-sm font-normal text-slate-500">Tons</span></span>
+                                    <span class="text-xs uppercase tracking-widest font-bold text-emerald-600 dark:text-emerald-500">CO2 Emissions Prevented</span>
+                                </div>
+                                <div class="flex flex-col items-center text-center p-4">
+                                    <span class="text-4xl font-black text-slate-900 dark:text-white mb-2">94<span class="text-xl">%</span></span>
+                                    <span class="text-xs uppercase tracking-widest font-bold text-blue-600 dark:text-blue-500">Landfill Diversion Rate</span>
+                                </div>
+                                <div class="flex flex-col items-center text-center p-4">
+                                    <span class="text-4xl font-black text-slate-900 dark:text-white mb-2">2.4<span class="text-xl">M</span> <span class="text-sm font-normal text-slate-500">Liters</span></span>
+                                    <span class="text-xs uppercase tracking-widest font-bold text-teal-600 dark:text-teal-500">Water Preserved</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.innerHTML = html;
+                    
+                    // Trigger bar animation
+                    setTimeout(() => {
+                        const b1 = container.querySelector('#bar-baseline');
+                        const b2 = container.querySelector('#bar-reform');
+                        if(b1) b1.style.width = '35%';
+                        if(b2) b2.style.width = '100%';
+                    }, 100);
+                    
+                    return container;
+                },
+
+                buildAdminView: function() {
+                    const container = document.createElement('div');
+                    container.className = 'w-full max-w-[1200px] mx-auto px-6 pt-12 pb-24 flex-grow flex flex-col relative z-10';
+
+                    const stats = [
+                        { label: 'Registered Enterprises', val: '142', icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' },
+                        { label: 'Asset Streams Monitored', val: '8,405', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
+                        { label: 'Volume Recycled (MT)', val: '45,290', icon: 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15' },
+                        { label: 'Active Channels', val: '24', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
+                        { label: 'Gross Merchandising Value', val: '₹12.4 Cr', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' }
+                    ];
+
+                    const html = `
+                        <div class="mb-10 text-center md:text-left">
+                            <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2">Network Administration Panel</h2>
+                            <p class="text-slate-600 dark:text-slate-400">Macro statistics and ecosystem health monitoring.</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                            ${stats.map((stat, i) => `
+                                <div class="glass-panel rounded-2xl p-6 flex flex-col justify-between hover:shadow-lg transition-all group border border-slate-200 dark:border-slate-800 ${i===4 ? 'md:col-span-2 lg:col-span-1 xl:col-span-1 bg-emerald-50 dark:bg-emerald-500/10 border-emerald-500/30' : ''}">
+                                    <div class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center text-emerald-500 mb-6 group-hover:scale-110 transition-transform">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${stat.icon}"></path></svg>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-3xl font-black text-slate-900 dark:text-white mb-1 tracking-tight">${stat.val}</h4>
+                                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-snug">${escapeHTML(stat.label)}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="mt-8 glass-panel rounded-2xl p-8 border border-slate-200 dark:border-slate-800 flex items-center justify-center min-h-[300px]">
+                            <p class="text-slate-400 dark:text-slate-500 font-mono text-sm text-center border border-dashed border-slate-300 dark:border-slate-600 p-8 rounded-xl bg-slate-50 dark:bg-slate-900/50">
+                                Detailed geographical heatmap and node management interface<br>reserved for production deployment.
+                            </p>
+                        </div>
+                    `;
+
+                    container.innerHTML = html;
+                    return container;
+                },
+
+                buildSandboxPlaceholder: function(viewIdentity) {
+                    const container = document.createElement('div');
+                    container.className = 'w-full max-w-4xl mx-auto px-6 pt-28 pb-20 flex-grow flex flex-col items-center justify-center relative z-10 text-center';
+                    
+                    container.innerHTML = `
+                        <div class="glass-panel p-16 rounded-[2rem] w-full relative overflow-hidden">
+                            <!-- Background overlay effect -->
+                            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
+                            
+                            <div class="relative z-10 flex flex-col items-center">
+                                <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 mb-8 animate-float shadow-lg">
+                                    <svg class="w-10 h-10 text-emerald-600 dark:text-emerald-500 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                </div>
+                                <h2 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-5 tracking-tight">${escapeHTML(viewIdentity)} <span class="text-emerald-500">Module</span></h2>
+                                <p class="text-slate-600 dark:text-slate-400 max-w-lg mx-auto mb-10 text-lg leading-relaxed">This architectural module is currently under development in the prototype sandbox environment. Features are isolated awaiting integration.</p>
+                                <button class="action-return px-8 py-3.5 bg-slate-900 dark:bg-white hover:bg-slate-800 dark:hover:bg-slate-100 text-white dark:text-slate-900 rounded-xl transition-all font-semibold shadow-[0_0_15px_rgba(0,0,0,0.1)] dark:shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                                    Return to Core Engine
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                    container.querySelector('.action-return').addEventListener('click', () => this.navigate('Landing'));
+                    return container;
+                }
+            };
+
+            // Safely Attach App to Global Context
+            window.ReFormAppState = ReFormAppState;
+
+            // Execute Boot Sequence
+            document.addEventListener('DOMContentLoaded', () => {
+                window.ReFormAppState.init();
+            });
+
+        })();
+    </script>
+</body>
+</html>
