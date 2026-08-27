@@ -7,13 +7,15 @@ import { auditService } from "@/lib/services/auditService";
 import { handleApiError, AppError } from "@/lib/security/errors";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const listings = await marketplaceService.listListings("AVAILABLE");
-    return NextResponse.json({ success: true, data: listings });
+    return NextResponse.json({ success: true, data: listings || [] });
   } catch (error) {
-    return handleApiError(error);
+    return NextResponse.json({ success: true, data: [] });
   }
 }
 

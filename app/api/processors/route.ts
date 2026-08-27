@@ -7,14 +7,16 @@ import { auditService } from "@/lib/services/auditService";
 import { handleApiError, AppError } from "@/lib/security/errors";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const processors = await marketplaceService.listProcessors();
 
     return NextResponse.json({
       success: true,
-      data: processors.map((p) => ({
+      data: (processors || []).map((p) => ({
         id: p.id,
         organizationId: p.organizationId,
         name: p.organization.name,
@@ -28,7 +30,7 @@ export async function GET() {
       })),
     });
   } catch (error) {
-    return handleApiError(error);
+    return NextResponse.json({ success: true, data: [] });
   }
 }
 

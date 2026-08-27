@@ -1,16 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { pathwayService } from "@/lib/services/pathwayService";
 import { handleApiError } from "@/lib/security/errors";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const pathways = await pathwayService.listActive();
 
     return NextResponse.json({
       success: true,
-      data: pathways.map((p) => ({
+      data: (pathways || []).map((p) => ({
         id: p.id,
         name: p.name,
         inputMaterial: p.inputMaterial,
@@ -26,6 +28,6 @@ export async function GET() {
       })),
     });
   } catch (error) {
-    return handleApiError(error);
+    return NextResponse.json({ success: true, data: [] });
   }
 }

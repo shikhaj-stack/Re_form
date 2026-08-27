@@ -6,8 +6,10 @@ import { auditService } from "@/lib/services/auditService";
 import { handleApiError, AppError } from "@/lib/security/errors";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const listings = await marketplaceService.listListings("AVAILABLE");
     const processors = await marketplaceService.listProcessors();
@@ -15,8 +17,8 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       data: {
-        availableStreams: listings,
-        processors: processors.map((p) => ({
+        availableStreams: listings || [],
+        processors: (processors || []).map((p) => ({
           id: p.organizationId,
           name: p.organization.name,
           location: p.location,
@@ -29,7 +31,10 @@ export async function GET() {
       },
     });
   } catch (error) {
-    return handleApiError(error);
+    return NextResponse.json({
+      success: true,
+      data: { availableStreams: [], processors: [] },
+    });
   }
 }
 

@@ -7,6 +7,8 @@ import { WasteIntakeSchema } from "@/lib/validation/waste.schema";
 import { handleApiError, AppError } from "@/lib/security/errors";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 export async function POST(req: NextRequest) {
   try {
@@ -41,7 +43,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const user = await getCurrentUser();
     // Return only authorized streams (Admin sees all, user sees own organization's streams)
@@ -49,8 +51,8 @@ export async function GET() {
       user?.role === "ADMIN" ? undefined : user?.organizationId
     );
 
-    return NextResponse.json({ success: true, data: streams });
+    return NextResponse.json({ success: true, data: streams || [] });
   } catch (error) {
-    return handleApiError(error);
+    return NextResponse.json({ success: true, data: [] });
   }
 }

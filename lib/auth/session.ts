@@ -61,19 +61,23 @@ export async function clearSessionCookie() {
 }
 
 export async function getCurrentUser(): Promise<SessionUser | null> {
-  const cookieStore = cookies();
-  const tokenCookie = cookieStore.get(COOKIE_NAME);
-  if (!tokenCookie?.value) return null;
+  try {
+    const cookieStore = cookies();
+    const tokenCookie = cookieStore.get(COOKIE_NAME);
+    if (!tokenCookie?.value) return null;
 
-  const payload = verifyToken(tokenCookie.value);
-  if (!payload) return null;
+    const payload = verifyToken(tokenCookie.value);
+    if (!payload) return null;
 
-  return {
-    id: payload.sub,
-    email: payload.email,
-    name: payload.name,
-    role: payload.role,
-    organizationId: payload.organizationId,
-    organizationName: payload.organizationName,
-  };
+    return {
+      id: payload.sub,
+      email: payload.email,
+      name: payload.name,
+      role: payload.role,
+      organizationId: payload.organizationId,
+      organizationName: payload.organizationName,
+    };
+  } catch {
+    return null;
+  }
 }

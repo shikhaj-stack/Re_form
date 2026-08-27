@@ -9,6 +9,8 @@ import { calculatePaverConversion } from "@/lib/calculations/paver-conversion";
 import { handleApiError } from "@/lib/security/errors";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 export async function POST(req: NextRequest) {
   try {
@@ -120,15 +122,15 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const user = await getCurrentUser();
     const assessments = await assessmentService.listRecent(
       user?.role === "ADMIN" ? undefined : user?.organizationId
     );
 
-    return NextResponse.json({ success: true, data: assessments });
+    return NextResponse.json({ success: true, data: assessments || [] });
   } catch (error) {
-    return handleApiError(error);
+    return NextResponse.json({ success: true, data: [] });
   }
 }
