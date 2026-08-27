@@ -22,10 +22,12 @@
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.460.0",
     "next": "^14.2.18",
+    "prisma": "^5.22.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "recharts": "^2.13.3",
     "tailwind-merge": "^2.5.4",
+    "tsx": "^4.23.12",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -38,9 +40,7 @@
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.18",
     "postcss": "^8.4.49",
-    "prisma": "^5.22.0",
     "tailwindcss": "^3.4.15",
-    "tsx": "^4.23.12",
     "typescript": "^5.6.3"
   }
 }
